@@ -1,0 +1,19 @@
+/* Write your CSS here */
+.team-match-container {
+  background-color: orange;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 30px;
+}
+
+.banner-image {
+  width: 90vw;
+  height: 300px;
+}
+.banner {
+  width: 90vw;
+  height: 300px;
+  margin-bottom: 20px;
+  
+}
