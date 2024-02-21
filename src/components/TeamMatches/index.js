@@ -1,19 +1,30 @@
 // Write your code here
 import './index.css'
 import {Component} from 'react'
+import {Link} from 'react-router-dom'
+import {
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 
 import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import LatestMatch from '../LatestMatch'
 
 class TeamMatches extends Component {
-  state = {teamData: [], isLoading: true}
+  state = {teamData: [], isLoading: true, statistics: ''}
 
   componentDidMount() {
     this.getRecent()
   }
 
   getRecent = async () => {
+    const stats = {Lost: 0, Won: 0, draw: 0}
+    console.log(stats)
     const {match} = this.props
     const {params} = match
     const {id} = params
@@ -51,13 +62,32 @@ class TeamMatches extends Component {
     }
     console.log(updatedData)
 
-    this.setState({teamData: updatedData, isLoading: false})
+    stats[updatedData.latestMatchDetails.matchStatus] =
+      stats[updatedData.latestMatchDetails.matchStatus] + 1
+
+    updatedData.recentMatches.forEach(each => {
+      stats[each.matchStatus] = stats[each.matchStatus] + 1
+    })
+    console.log('stats', stats)
+    const statData = [
+      {name: 'Won', value: stats.Won},
+      {name: 'Lost', value: stats.Lost},
+      {name: 'Draw', value: stats.draw},
+    ]
+    console.log(statData)
+
+    this.setState({
+      teamData: updatedData,
+      isLoading: false,
+      statistics: statData,
+    })
     const isLoading = this.state
     console.log(isLoading)
   }
 
   render() {
-    const {teamData, isLoading} = this.state
+    const {teamData, isLoading, statistics} = this.state
+    const colrs = ['#00e600', '#ff3300', '#666666']
     console.log(isLoading)
     const {teamBannerUrl, latestMatchDetails, recentMatches} = teamData
     return isLoading ? (
@@ -75,6 +105,30 @@ class TeamMatches extends Component {
           recentMatchesDetails={recentMatches}
           key={latestMatchDetails.id}
         />
+        <div className="pie-chart">
+          <PieChart width={730} height={250}>
+            <Pie
+              data={statistics}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              label
+            >
+              {statistics.map((entry, index) => (
+                <Cell key={`cell-${index + 1}`} fill={colrs[index]} />
+              ))}
+            </Pie>
+            <Legend />
+          </PieChart>
+        </div>
+        <Link to="/">
+          <button type="button" className="back-button">
+            Back
+          </button>
+        </Link>
       </div>
     )
   }
