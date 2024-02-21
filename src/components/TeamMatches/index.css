@@ -15,5 +15,14 @@
   width: 90vw;
   height: 300px;
   margin-bottom: 20px;
-  
+}
+.back-button {
+  background-color: aqua;
+  border-radius: 10px;
+  height: 30px;
+  width: 100px;
+  cursor: pointer;
+}
+.pie-chart {
+  align-self: center;
 }
